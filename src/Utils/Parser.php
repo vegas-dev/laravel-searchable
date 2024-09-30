@@ -12,6 +12,9 @@ class Parser
         $formattedQuery = self::trim($query);
         $formattedQuery = self::lowercase($formattedQuery);
         $words = self::splitString($formattedQuery);
+        $words = array_map(function ($w) {
+            return trim($w, '.,');
+        }, $words);
 
         if ($fulltext) {
             $words = self::addWildcards($words);

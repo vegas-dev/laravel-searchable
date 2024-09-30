@@ -27,7 +27,7 @@ trait AddsSearchTermToQuery
     {
         $sql = "LOWER($attributeField) LIKE ?";
 
-        $query->orWhereRaw($sql, $term);
+        $query->whereRaw($sql, $term);
 
         $this->addSearchWeight($sql, $weight, $term);
     }

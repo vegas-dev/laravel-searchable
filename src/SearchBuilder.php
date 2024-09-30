@@ -85,14 +85,16 @@ class SearchBuilder extends Builder
     {
         return $this->where(function (Builder $query) use ($searchTerms) {
             foreach ($this->searchableAttributes as $searchableAttribute) {
-                foreach ($searchTerms as $searchTerm) {
-                    $this->searchTerm(
-                        $query,
-                        $searchableAttribute->getAttribute(),
-                        $searchableAttribute->getWeight(),
-                        $searchTerm
-                    );
-                }
+                $this->orWhere(function (Builder $query) use($searchTerms, $searchableAttribute) {
+                    foreach ($searchTerms as $searchTerm) {
+                        $this->searchTerm(
+                            $query,
+                            $searchableAttribute->getAttribute(),
+                            $searchableAttribute->getWeight(),
+                            $searchTerm
+                        );
+                    }
+                });
             }
         });
     }
