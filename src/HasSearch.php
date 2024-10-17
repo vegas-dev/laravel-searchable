@@ -17,11 +17,11 @@ trait HasSearch
      * If orderByWeight is set to true, orders the list by the
      * weight of each matching model attributes.
      */
-    public function scopeSearch(Builder $query, string $search, bool $orderByWeight = true): void
+    public function scopeSearch(Builder $query, string $search, string $rule = 'and', bool $orderByWeight = true): void
     {
         $keyType = $query->getModel()->getKeyType();
         $keyName = $query->getModel()->getQualifiedKeyName();
-        $keys = $this->applySearch($query, $search, $keyName);
+        $keys = $this->applySearch($query, $search, $rule, $keyName);
 
         if (in_array($keyType, ['int', 'integer'])) {
             $query->whereIntegerInRaw($keyName, $keys);
@@ -42,10 +42,11 @@ trait HasSearch
      * Retrieves the model keys matching
      * the given search query string.
      */
-    protected function applySearch(Builder $query, string $search, string $keyName): Collection
+    protected function applySearch(Builder $query, string $search, $rule, string $keyName): Collection
     {
         return SearchBuilder::for($query)
             ->withSearchableAttributes($this->getSearchableAttributes())
+            ->withRule($rule)
             ->search($search)
             ->pluck($keyName);
     }

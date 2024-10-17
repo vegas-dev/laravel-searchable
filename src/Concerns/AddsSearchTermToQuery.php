@@ -13,21 +13,21 @@ trait AddsSearchTermToQuery
      *
      * @param  string|Expression  $attribute
      */
-    protected function searchTerm(Builder $query, $attribute, float $weight, string $searchTerm): void
+    protected function searchTerm(Builder $query, $attribute, float $weight, string $searchTerm, string $rule): void
     {
         $attributeField = AttributeUtil::formatAttribute($this->getModel(), $attribute);
 
-        $this->querySearchTerm($query, $attributeField, $searchTerm, $weight);
+        $this->querySearchTerm($query, $attributeField, $searchTerm, $weight, $rule);
     }
 
     /**
      * Queries the given search term against the given attribute.
      */
-    protected function querySearchTerm(Builder $query, string $attributeField, string $term, float $weight): void
+    protected function querySearchTerm(Builder $query, string $attributeField, string $term, float $weight, string $rule): void
     {
         $sql = "LOWER($attributeField) LIKE ?";
 
-        $query->whereRaw($sql, $term);
+        $rule === 'and' ? $query->whereRaw($sql, $term) : $query->orWhereRaw($sql, $term);
 
         $this->addSearchWeight($sql, $weight, $term);
     }

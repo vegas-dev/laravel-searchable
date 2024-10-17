@@ -22,6 +22,9 @@ class SearchBuilder extends Builder
     /** @var int */
     private $defaultMatchWeight;
 
+    /** @var string */
+    private $rule = 'and';
+
     /**
      * SearchBuilder constructor.
      */
@@ -61,6 +64,12 @@ class SearchBuilder extends Builder
         return $this;
     }
 
+    public function withRule(string $rule)
+    {
+        $this->rule = $rule;
+        return $this;
+    }
+
     /**
      * Searches through the searchable attributes the given search string.
      */
@@ -91,7 +100,8 @@ class SearchBuilder extends Builder
                             $query,
                             $searchableAttribute->getAttribute(),
                             $searchableAttribute->getWeight(),
-                            $searchTerm
+                            $searchTerm,
+                            $this->rule,
                         );
                     }
                 });
